@@ -3,36 +3,37 @@ $(document).ready(function(){
 
 
 	click=false;
+	posClick=0;
+	currentX=0;
 
-	posX = 0;
-	posClickX=0;
-	newPosMouse=0;
-	start = {x: 500, y: 0},
-
+	start = {x: 0, y: 0},
+	final = {x: 0, y: 0},
 	img = $('img');
 	width = img.width;
 	height = img.height;
 
 	container = $("#container")
 	container.css('background-image', 'url('+img.attr("src")+')');
-
+	container.css('background-position','0 0');
 
     container.mousedown(function(){
     	click=true;
-    	posClickX = event.pageX - this.offsetLeft;
-    	//mouvement(posClick);
+    	posClick = event.pageX - this.offsetLeft;
 	});
 
 	container.mouseup(function(){
 		click=false;
+		currentX = start.x;
 	});
 
 	container.mousemove(function(){
 		if(click==true){
-			var posMouseX = event.pageX - this.offsetLeft;
-			
-			start.x = posMouseX;
+			posMouseX = event.pageX - this.offsetLeft;
 
+			
+
+			start.x = currentX + (posClick - posMouseX);
+			$('span').text(currentX + ' ' + posClick + ' ' + posMouseX + ' ' + start.x);
 
 			$(this).css('background-position', start.x + 'px ' + start.y + 'px');
 	
@@ -46,10 +47,8 @@ $(document).ready(function(){
 
 			newPosMouseX = posClickX - posMouseX;
 			$( "span:last" ).text( "newPosMouseX : " + newPosMouseX );
-			$("#container").css('background-position', newPosMouseX+' 0px');
-	*/
+			$("#container").css('background-position', newPosMouseX+' 0px');*/
 		}
-
 	});
 
 	function mouvement(posClickX){

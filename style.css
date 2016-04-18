@@ -4,8 +4,9 @@
     display: block;
 	width: 1250px; height: 599px;
     margin-left: auto;
-    margin-right: auto
-
+    margin-right: auto;
+    background-position-x: 0px;
+    background-position-y: 0px;
 }
 
 img{
