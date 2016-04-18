@@ -1,47 +1,59 @@
 $(document).ready(function(){
 
-	var img = new Image();
-	img.src="imgs/pano.jpg";
+
+
 	click=false;
+
+	posX = 0;
+	posClickX=0;
+	newPosMouse=0;
+	start = {x: 500, y: 0},
+
+	img = $('img');
 	width = img.width;
 	height = img.height;
-	posX = 0;
-	posClick=0;
-	newPosMouse=0;
 
-	$("#container").css('background-image', 'url('+img.src+')');
+	container = $("#container")
+	container.css('background-image', 'url('+img.attr("src")+')');
 
 
-    $("#container").mousedown(function(){
+    container.mousedown(function(){
     	click=true;
-    	$( "span:last" ).text( "click : " + click );
-    	posClick = event.pageX - this.offsetLeft;
+    	posClickX = event.pageX - this.offsetLeft;
     	//mouvement(posClick);
 	});
 
-	$("#container").mouseup(function(){
+	container.mouseup(function(){
 		click=false;
-		$( "span:last" ).text( "click : " + click );
 	});
 
-	$("#container").mousemove(function(){
+	container.mousemove(function(){
 		if(click==true){
 			var posMouseX = event.pageX - this.offsetLeft;
+			
+			start.x = posMouseX;
+
+
+			$(this).css('background-position', start.x + 'px ' + start.y + 'px');
+	
+
+
+			/*var posMouseX = event.pageX - this.offsetLeft;
 		    var y = event.pageY - this.offsetTop;
 
 	  		var pageCoords = "( " + posMouseX + ", " + y + " )";
 			$( "span:first" ).text( "( event.pageX, event.pageY ) : " + pageCoords + width);
 
-			newPosMouse = posClick - posMouseX;
-			$( "span:last" ).text( "newPosMouse : " + newPosMouse );
-			$("#container").css('background-position', newPosMouse+' 0px');
-	
+			newPosMouseX = posClickX - posMouseX;
+			$( "span:last" ).text( "newPosMouseX : " + newPosMouseX );
+			$("#container").css('background-position', newPosMouseX+' 0px');
+	*/
 		}
 
 	});
 
-	function mouvement(posClick){
-		/*$( "span:last" ).text( "posClick : " + posClick );
+	function mouvement(posClickX){
+		/*$( "span:last" ).text( "posClickX : " + posClick );
 
     	$("#container").mousemove(function(event){
 
@@ -51,7 +63,7 @@ $(document).ready(function(){
 	  		var pageCoords = "( " + posMouseX + ", " + y + " )";
 			$( "span:first" ).text( "( event.pageX, event.pageY ) : " + pageCoords + width);
 
-    		newPosMouse = posClick - posMouseX;
+    		newPosMouse = posClickX - posMouseX;
 			$( "span:last" ).text( "newPosMouse : " + newPosMouse );
 			$("#container").css('background-position', newPosMouse+' 0px');
     	});*/
