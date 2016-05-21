@@ -1,14 +1,58 @@
 
 
 .container{
+    position: relative;
     display: block;
-	width: 1250px; height: 599px;
+    width: 1250px; height: 599px;
     margin-left: auto;
     margin-right: auto;
     background-position-x: 0px;
     background-position-y: 0px;
+    cursor:move;
 }
 
-img{
+.button-deplacement{
+  position: absolute;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  cursor:pointer;
+  border: none;
+  outline:none;
+  background-color: rgba(255,255,255,0);
+  border-radius: 50px;
+}
+
+#avant{
+  top: 70%;
+  left: 47%;
+  background-image: url(imgs/avantnoir.png);
+}
+#avant:hover{
+  background-image: url(imgs/avant.png);
+}
+
+#gauche{
+  top: 85%;
+  left: 40%;
+  background-image: url(imgs/gauchenoir.png);
+}
+
+#gauche:hover{
+  background-image: url(imgs/gauche.png);
+}
+
+#droite{
+  top: 85%;
+  left: 55%;
+  background-image: url(imgs/droitenoir.png);
+}
+#droite:hover{
+  top: 85%;
+  left: 55%;
+  background-image: url(imgs/droite.png);
+}
+
+.image_panorama{
 	display: none
 }
