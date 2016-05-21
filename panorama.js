@@ -1,35 +1,30 @@
 $(document).ready(function(){
-	buttonClick=false
-	click=false
-	posClick=0
-	currentX=0
-	currentColorLine = 599
-	tabImages = new Array()
-	currentScenePoint = new Array()
-	currentSceneIndex=0
+	var buttonClick=false;
+	var click=false;
+	var posClick=0;
+	var currentColorLine = 599;
+	var tabImages = new Array();
+	var currentScenePoint = new Array();
+	var currentSceneIndex=0;
+	var showTransi=0;
 
+	var img = $('img');
+	var url_img = img.attr("src");
+	var container = $("#container");
+	container.css('background-image', 'url('+url_img+')');
 
-	start = {x: 0, y: 0}
-	final = {x: 0, y: 0}
-	img = $('img')
-	url_img = img.attr("src")
-
-	tabImages = getAllTransition()
-	console.info(tabImages[0])
-
-	//getCurrentScene()
-	//alert(posXColor)
-	//getTransition(currentColorLine+600)
-	//alert(color.b)
-
-
-	container = $("#container")
-	container.css('background-image', 'url('+url_img+')')
-	container.css('background-position','0 0')
+	var start = {x: parseInt(container.css('background-positionX')), y: 0};
+	var currentX=start.x;
+	var zoneXVisite = container.width();
 
 	$("<button id='avant' class='button-deplacement icon-avancer'></button>").appendTo($(".container"));
+	//$("#avant").toggle();
 	$("<button id='gauche' class='button-deplacement icon-direction'></button>").appendTo($(".container"));
 	$("<button id='droite' class='button-deplacement icon-direction'></button>").appendTo($(".container"));
+
+	tabImages = getAllTransition();
+	console.info(tabImages);
+	getCurrentScene();
 
   	container.mousedown(function(){
   		if(buttonClick == false){
@@ -42,7 +37,6 @@ $(document).ready(function(){
 	container.mouseup(function(){
 		click=false;
 		currentX = start.x;
-		//start.y += 600;
 	});
 
 	container.mousemove(function(){
@@ -53,6 +47,11 @@ $(document).ready(function(){
 		}
 	});
 
+
+	container.mouseout(function(){
+		click=false;
+		currentX = start.x;
+	});
 
 	buttonLeft = $("#gauche");
 	buttonLeft.mousedown(function(){
@@ -77,11 +76,24 @@ $(document).ready(function(){
 	buttonAvant = $("#avant");
 	buttonAvant.mousedown(function(){
 		buttonClick=true;
-		goToScene(currentSceneIndex)
-		vertical();
+		goToScene(buttonAvant.data("transition"));
+
 	});
 	buttonAvant.mouseup(function(){
 		buttonClick=false;
+	});
+	buttonAvant.mouseover(function(){
+		console.info(buttonAvant.css('background-image'));
+		if(showTransi==1){
+			buttonAvant.css('background-image','url(imgs/avant.png)');
+		}else
+			buttonAvant.css("background-image","url(imgs/falseBG.png)");
+	});
+	buttonAvant.mouseout(function(){
+		if(showTransi==1){
+			buttonAvant.css('background-image','url(imgs/avantnoir.png)');
+		}else
+			buttonAvant.css("background-image","url(imgs/falseBG.png)");
 	});
 
 	function horizontal(){
@@ -90,19 +102,17 @@ $(document).ready(function(){
         	start.x -= 2000
         else if(start.x<-2000)
         	start.x+=2000
-
 		container.css('background-position', start.x + 'px ' + start.y + 'px');
-		
-		$('.transition').css('left', start.x );	
-			
-
+		enableTransition()
 	}
+
 	function vertical(){
         $('span').text(start.x + " " + start.y);
-
 		container.css('background-position', start.x + 'px ' + start.y + 'px');
-		
-		$('.transition').css('top', start.y);	
+		enableTransition()
+		getCurrentScene();
+		buttonAvant.css("background-image","url(imgs/falseBG.png)");
+		showTransi=0;
 	}
 
 	function getImageData( url_img ) {
@@ -116,7 +126,6 @@ $(document).ready(function(){
 	    context.drawImage( image, 0, 0 );
 
 	    return context.getImageData( 0, 0, image.width, image.height );
-
 	}
 
 	function getPixel( imageData, x, y ) {
@@ -129,90 +138,89 @@ $(document).ready(function(){
 		var imageData = getImageData( url_img );
 		var nbImages = imageData.height/600;
 
+		var tabReturn = new Array();
+
+
 		for (var i = 1; i <= nbImages; i++) {
 			nbPoint = 0;
+			tabImages[i-1] = new Array();	
 			for (var j = 0; j <= imageData.width-1; j++) {
-				tabImages[i-1] = new Array();	
+
 				color = getPixel( imageData, j, 600*i-1);
 
 				if(color.r != 0 || color.g != 0 || color.b != 0){
 					tabImages[i-1][nbPoint] = new Array();
-					tabImages[i-1][nbPoint].push(color.r+';'+color.g+';'+color.b, j, 600*i-600)
-					console.info("Image n" + i + " position x :" + tabImages[i-1][nbPoint][1] + " n point " + nbPoint + " " + tabImages[i-1][nbPoint][0])
-					console.info(tabImages)
-					nbPoint++
+					tabImages[i-1][nbPoint].push(color.r+';'+color.g+';'+color.b, j, -(600*i-600));
+					nbPoint++;
+				}
+				if(j==1998){
+					tabReturn.push(tabImages[i-1]);
 				}
 			}
-
 		}
-		console.info(tabImages)
-		return tabImages
+		return tabReturn;
 	}
 
 
-	function goToScene(currentSceneIndex){
-		currentColor = tabImages[currentSceneIndex]['color']
-		currentPositionY = tabImages[currentSceneIndex]['positionY']
-		/*for(i=0;i<tabImages.length;i++){
-			alert(tabImages[i]['positionY'] + " et " + tabImages[i]['color'])
-			if(currentPositionY != tabImages[i]['positionY'] && currentColor == tabImages[i]['color']){
-				alert(start.y)
-				start.y = tabImages[i]['positionY']
-				alert(start.y+ " " + tabImages[i]['positionY'])
-			}	
-		}*/
-		getCurrentScene()
+	function goToScene(initColor){
+		iteration:
+		for(var i = 0; i < tabImages.length; i++){
+			for (var j = 0; j < tabImages[i].length; j++) {
+				if(initColor == tabImages[i][j][0] && start.y != tabImages[i][j][2]){
+					console.info("1er : "+ initColor + " en "+start.y+" et : "+tabImages[i][j][0]+" au coordonnees "+tabImages[i][j][1]+";"+tabImages[i][j][2])
+					start.y = tabImages[i][j][2];
+					
+					vertical();
+					break iteration;
+				}
+			}
+		}
 	}
 
 
 	function getCurrentScene(){
-		currentScenePoint.length=0
-		console.info(tabImages[0][0])
-		for(i=0;i<tabImages.length;i++){
-			/*if(start.y == tabImages[i][0][3]){
-				currentSceneIndex=i
+		currentScenePoint = [];
+		for(var i = 0; i < tabImages.length; i++){
+			for (var j = 0; j < tabImages[i].length; j++) {
+				if(start.y == tabImages[i][j][2]){
+					currentSceneIndex= i;
+					currentScenePoint.push(tabImages[i][j]);
+				}
+			}
 
-				for (var j = 0 - 1; j < 10; j--) {
-					if(tabImages[i][j]==null)
-						alert('coucou')
-				};
-				currentScenePoint = new Array()
-				currentScenePoint[currentScenePoint.lenght]['xColor'] = tabImages[i]['xColor']
-				alert(tabImages[i]['xColor'].length)
-
-				[nbPoint] = new Array();
-					tabImages[i-1][nbPoint][0] = color.r+';'+color.g+';'+color.b
-					tabImages[i-1][nbPoint][1] = j
-					tabImages[i-1][nbPoint][2] = 600*i-600
-				//alert(tabImages[i]['xColor'])
-
-				//alert(currentScenePoint[currentScenePoint.lenght]['xColor'])
-			}	*/
 		}
 	}
 
 	function enableTransition(){
+		var transi = -1;
 
+		var point = 0
+		for (var i = currentScenePoint.length - 1; i >= 0; i--) {
+			point = currentScenePoint[i][1];
 
-
-	}
-
-	function getTransition(currentColorLine){
-		var imageData = getImageData( url_img );
-		var nbImages = getNbImage(imageData)
-
-		for (var j = 0; j <= imageData.width-1; j++) {
-
-			color = getPixel( imageData, j, currentColorLine);
-
-			if(color.r != 0 || color.g != 0 || color.b != 0){
-				//alert(color.r+';'+color.g+';'+color.b + ' posX '+j+ ' posY '+currentColorLine);
-				$("<i class='icon-transition'></i>").appendTo($(".container"));
-				//alert(start.x +" "+ j + " " + start.x%j);
-				return j;
+			
+			if(start.x < 0 && point < zoneXVisite/2){
+				point = -(1000+zoneXVisite/2+point);
+			}else if(start.x > 0 && point < zoneXVisite/2){
+				point = zoneXVisite/2-point
+			}else if(start.x < 0 && point > 1000){
+				point = -(point-zoneXVisite/2)
+			}else if(start.x > 0 && point > 1000){
+				point = (2000-point)+zoneXVisite/2
 			}
-		};
-		//var color = getPixel( imageData, 10, 10 );
+
+			if((start.x > 0 && (point <= start.x + 100 && point >= start.x - 100)) || (start.x < 0 && (point <= start.x + 100 && point >= start.x - 100))){
+				transi = i;
+			}
+		}
+		if(transi!=-1){
+			$('#avant').css("background-image","url(imgs/avantnoir.png)");
+			$('#avant').data("transition",currentScenePoint[transi][0]);
+			showTransi = 1;
+		}else{
+			$('#avant').css("background-image","url(imgs/falseBG.png)");
+			showTransi = 0;
+		}
 	}
 
 	function getNbImage(imageData){

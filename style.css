@@ -3,9 +3,10 @@
 .container{
     position: relative;
     display: block;
-    width: 1250px; height: 599px;
+    width: 1000px; height: 599px;
     margin-left: auto;
     margin-right: auto;
+    transform-origin: 0% 0%; 
     background-position-x: 0px;
     background-position-y: 0px;
     cursor:move;
@@ -24,9 +25,9 @@
 }
 
 #avant{
-  top: 70%;
-  left: 47%;
-  background-image: url(imgs/avantnoir.png);
+  top: 85%;
+  left: 47.5%;
+  background-image: url(imgs/falseBG.png);
 }
 #avant:hover{
   background-image: url(imgs/avant.png);
