@@ -1,9 +1,12 @@
 
+h1{
+  text-align: center;
+}
 
 .container{
     position: relative;
     display: block;
-    width: 1000px; height: 599px;
+    width: 1500px; height: 600px;
     margin-left: auto;
     margin-right: auto;
     transform-origin: 0% 0%; 
